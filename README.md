@@ -1,20 +1,5 @@
 # Lab7_Project_Setup_and_Debugging
 
-To manualize:
-1. create new project
-2. copy main.c
-3. open configuration bits view
-4. configure FOSC, WDTEN, LVP, PBADEN
-5. create source code
-6. copy source code to uC_Config.c
-7. set PICkit3 as Tool
-8. press Debug -> Error
-9. configure voltage support from PICkit3
-10. warning wegklicken
-11. LEDs blinken, aber wie schnell?
-12. Simulator Config zeigen
-13. Stopwatch (for-loop)
-
 In this laboratory we will take a look at the fundamental settings necessary to set up a project and how to use the Simulator and the Debugger.
 Therefore, we will
 1. set up a new project
@@ -31,7 +16,7 @@ Now, to set up a new project click on the new project button as shown below.
 ![](images/06_new_project.png)After clicking on "Finish" you should see below landing page. Well done, you just created a new project.
 ![](images/07_landing_page.png)Usually you would write the code yourself. But today, we'll skip that and use the code provided via GitHub. Therefore we righ-click (place mouse over it and click the right instead of the left button) on "Soure Files" in the top left project view. Afterward, click on "Add Existing Item...".
 ![](images/08_add_main.png)
-A browser should open. Navigate to you cloned folder and select main.c to be included.
+A browser should open. Navigate to the just cloned folder and select main.c to be included.
 ![](images/09_add_main.png)
 Now that we have some code in our project, it's time to add the source file to configure our microcontroller. As it's more convenient, we use mainly default settings, and it's not necessary to code this file yourself, we will use the built in "Target Memory View" to create the configuration source code for us. To do so
 1. click on "Window" in the menu bar (top of the IDE)
@@ -81,8 +66,33 @@ Your indexing variable i needs to be initialized. And this initialization takes 
 ![](images/27_stop_loop.png)
 Write down your approach to overcome this issue. I'll ask for the solution in the next lecture.
 # Configure PICkit3 and do some debugging with it, too
+Now, that we know how to use the Simulator and the Stopwatch, we will check how to debug code on the microcontroller itself.
+Therefore, go back to the configuration drop-down menu on the top left of the IDE and select default.
+![](images/20_set_simulator_config.png)
+When done, click on Debug and wait for the program to start. Check the output on the bottom view. When you se an error as shown below, you can got to the next image, to see how to configure the power supply via the PICkit3.
 ![](images/96_missing_power_supply.png)
+As the error states out, we need to supply the target voltage (VDD) to the board. This can be done using the PICkit3, but needs to be configured in the project properties. Click on the wrench symbol on the left center of the IDE to open them. If opened, select "Conf: \[default\]". In the configuration mask on the right select the correct device, if not already selected, and set the PICkit3 as "Connected Hardware Tool". Make sure XC8 (v3.00) is selected as compiler and click "Apply".
 ![](images/97_set_PICkit_3.png)
+Now, we can configure the PICkit3 to provide the necessary voltag. Therefore, we select "PICkit3" in left column of the window and "Power" in the drop-down menu at the top center.
 ![](images/98_set_power.png)
+Now we activate "Power target circuit from PICkit3" and set the "Voltage Level" to 3.25. Click on "Apply" and then on "OK".
 ![](images/99_set_power.png)
+Back to the main window of the IDE, click on Debug and check whether or not the LEDs are blinking. They don't, right?
+Then we should find out why, using breakpoints and the "Watches" Window.
+We already know, that LEDs are controlled using the LATB register. Besides that TRISB sets the signal flow's direction (input or output), that could be an issue, too. To see if any of those registers are the root of our problem, we will set a breakpoint in line 26 and click on debug. As soon as you program is paused in line 26, open the Watches tab in the bottom view.
+![](images/100_select_watches.png)
+There you can add watches (e.g. register) you want to observe during debugging. Let's add LATB and TRISB, here. To do so double click on "\<Enter new watch\>".
+![](images/101_add_watch.png)
+And add the first register (e.g. TRISB) using the just opened window. Repeat this process for LATB.
+![](images/102_add_watch.png)
+![](images/103_watches_set_up.png)
+If you're done adding those two registers, look at the next image to add the values binary view to the Watch.
+![](images/104_enable_binary_view.png)
+Now that we can keep track of the changes of those registers, we will use the step over function to see which register changes when.
+The step over button is the one next to the play button.
+![](images/105_step_over.png)
+Use it to step through your code. After each click check the current register's value and ask yourself if it is what you would expect.
+If not, comment out the line of code where the strange behavior took place, stop execution and click debug again, to check if you error is fixed. If so, great you're done for today. If not, investigate further or ask for help if you're stuck.
+
+For those who still not understand what's happening in lines 28 and 29, I'll give an explanation in the next lecture.
 
