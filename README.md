@@ -52,20 +52,34 @@ Name the new file "uC_Config", in the just opened window.
 ![](images/13_create_uC_Config.png)
 Now your project is set up and the microcontroller has a sufficient configuration that is ensured even after a power-reset.
 # Configure the Simulator and do some debugging
+Now that we have a project, let's investigate it a bit. First, we will se what the Simulator of MPLAB can be used for. To do so, we need to configure it, too. To open the project's configuration click on the wrench symbol on the left center of the IDE, shown in below picture.
 ![](images/14_configure_project.png)
+Within the "Project Properties" window you need to click on "Manage Configurations" on the bottom left of the window, in order to add a new configuration. We'll keep the default configuration for later.
 ![](images/15_configure_project.png)
+Now, click on "New" and give the configuration a name in the just opened window, as shown below. I'd suggest you name it "Simulator".
 ![](images/16_configure_project.png)
 ![](images/17_configure_project.png)
-![](images/18_configure_project.png)
+Now click on "Ok" in both previously opened windows, to return to the "Project Properties" windows, where we will configure the simulator.
+Select "Conf: Simulator" on the left of the window. Now, choose the same device as previously (PIC18F25K22), set the Tool to Simulator and select the XC8 (v3.00) Compiler again and click on "Apply".
+![](images/18_configure_project.png)If done, select "Simulator" on the left of the window to open the Simulator's configuration. Today, nothing needs to be done here. But keep in mind, that you need to set the "Instruction Frequency (Fcyc)" that matches with you configures oscillator frequency (Fosc). As the Fosc is set to 4MHz within the code, we can leave the configured Fcyc as 1MHz. Now, click "OK" to return to the IDE.
 ![](images/19_configure_project.png)
-![](images/20_set_simulator_config.png)
+Back to the IDE you can change the configuration using the drop-down menu on the top left of the IDE. Select "Simulator" there.
+![](images/20_set_simulator_config.png)For today, we will use the simulator to check how much time the for-loop is using. To debug the timing between different lines of code, we can use the provided Stopwatch of MPLAB. It can be opened by first clicking on "Window", then select Debugging, and afterwards clicking on Stopwatch. A new tab will open on the bottom view of the IDE.
 ![](images/21_open_stopwatch.png)
+Now we will set a breakpoint in line 21, by clicking on the line number (21). If a red square appears where you just clicked, a breakpoint is added. If, not replace the cursor and try again. After the breakpoint is set, click the debug symbol. While the code is being processed and flashed to the microcontroller, you can switch to the Stopwatch tab on the bottom view, by clicking on the Stopwatch tab.
 ![](images/22_start_simulation.png)
+As soon as the execution of the code reaches line 21 it will stop, and the line where the program was stopped will be highlighted in green (see picture below) and the time used since the last stop is shown in our Stopwatch tab. Now we can use the stopwatch to see how long one iteration of the loop will take. Hit the play button to do so.
 ![](images/23_stop_loop.png)
+A new entry in the stopwatch tab appears and shows us, that one iteration of the loop took 15µs. You should now be able to calculate the time required to process the complete loop. Do this, and continue with the below step, afterward.
 ![](images/24_stop_loop.png)
+Now that you calculated a duration necessary for processing the loop, we will stop our program to reset our breakpoints and check our assumptions using the Stopwatch. Therefore, click the stop button and remove the breakpoint in line 21, by clicking on it. Afterward, add new breakpoints to lines 20 and 23.
 ![](images/25_stop_loop.png)
+After the breakpoints are reset, we cann start our program again by clicking on the Debug symbol. As soon as the program is paused on the breakpoint in line 20, remove the breakpoint (again by clicking on it) and click in play. This will cause the loop to be executed entirely and the program to be paused when reaching line 23. This way the time required by the loop ist stopped.
 ![](images/26_stop_loop.png)
+Now check you assumption. Did you expect the loop to take 150.004 ms? I guess you didn't. You very likely calculated 150ms processing time for the loop. Which is correct, from the information you had. But if you take a look on your stopwatch you will see, that the loop took 150004 cycles. Why? One iteration took 15µs (or 15 cycles) before. Where are the 4 additional cycles coming from?
+Your indexing variable i needs to be initialized. And this initialization takes the additional 4 cycles. Assumed you need to exactly waste 150ms, could you think of a way to do this with a modification of the existing loop?
 ![](images/27_stop_loop.png)
+Write down your approach to overcome this issue. I'll ask for the solution in the next lecture.
 # Configure PICkit3 and do some debugging with it, too
 ![](images/96_missing_power_supply.png)
 ![](images/97_set_PICkit_3.png)
